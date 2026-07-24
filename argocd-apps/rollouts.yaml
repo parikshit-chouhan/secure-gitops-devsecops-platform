@@ -1,0 +1,131 @@
+# argocd-apps/rollouts.yaml
+
+# KAAM: Canary Deployment — Naya version safely deploy karo
+
+#
+
+# CANARY KYA HOTA HAI?
+
+# Pehle sirf 20% traffic naye version ko → check karo → phir 100%
+
+# Agar koi problem ho → rollback karo, sirf 20% users affected hue
+
+#
+
+# JENKINS IS FILE KO UPDATE KAREGA:
+
+# sed -i 's|image: .../juice-shop:.*|image: .../juice-shop:BUILD_NUMBER|'
+
+apiVersion: argoproj.io/v1alpha1
+
+kind: Rollout
+
+metadata:
+
+  name: juice-shop
+
+  namespace: juice-shop
+
+spec:
+
+  replicas: 2
+
+  selector:
+
+    matchLabels:
+
+      app: juice-shop
+
+  strategy:
+
+    canary:
+
+      # Stable service — purana working version
+
+      stableService: juice-shop-stable
+
+      # Canary service — naya version
+
+      canaryService: juice-shop-canary
+
+      steps:
+
+      # Step 1: Pehle 20% traffic naye version ko do
+
+      - setWeight: 20
+
+      - pause:
+
+          duration: 30s    # 30 second ruko — metrics check karo
+
+      # Step 2: Agar sab theek hai → 100% karo
+
+      - setWeight: 100
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: juice-shop
+
+    spec:
+
+      containers:
+
+      - name: juice-shop
+
+        # ⚠️ JENKINS IS LINE KO UPDATE KAREGA
+
+        image: itsparikshit/juice-shop:latest
+
+        imagePullPolicy: Always
+
+        ports:
+
+        - containerPort: 3000
+
+        env:
+
+        - name: NODE_ENV
+
+          value: "production"
+
+        resources:
+
+          requests:
+
+            memory: "256Mi"
+
+            cpu: "250m"
+
+          limits:
+
+            memory: "512Mi"
+
+            cpu: "500m"
+
+        readinessProbe:
+
+          httpGet:
+
+            path: /
+
+            port: 3000
+
+          initialDelaySeconds: 30
+
+          periodSeconds: 10
+
+        livenessProbe:
+
+          httpGet:
+
+            path: /
+
+            port: 3000
+
+          initialDelaySeconds: 60
+
+          periodSeconds: 15

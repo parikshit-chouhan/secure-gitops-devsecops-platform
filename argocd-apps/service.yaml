@@ -1,0 +1,47 @@
+# argocd-apps/service.yaml
+# KAAM: Stable aur Canary services banana
+# Traffic splitting ke liye dono alag services chahiye
+
+---
+# Stable Service — Production traffic yahan jata hai
+apiVersion: v1
+kind: Service
+metadata:
+  name: juice-shop-stable
+  namespace: juice-shop
+spec:
+  selector:
+    app: juice-shop
+  ports:
+  - port: 3000
+    targetPort: 3000
+
+---
+# Canary Service — New version test traffic yahan
+apiVersion: v1
+kind: Service
+metadata:
+  name: juice-shop-canary
+  namespace: juice-shop
+spec:
+  selector:
+    app: juice-shop
+  ports:
+  - port: 3000
+    targetPort: 3000
+
+---
+# External NodePort Service — Internet se access ke liye
+apiVersion: v1
+kind: Service
+metadata:
+  name: juice-shop-external
+  namespace: juice-shop
+spec:
+  selector:
+    app: juice-shop
+  type: NodePort
+  ports:
+  - port: 3000
+    targetPort: 3000
+    nodePort: 32000    # http://<WORKER_IP>:32000 → Juice Shop
