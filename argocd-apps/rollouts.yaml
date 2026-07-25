@@ -14,7 +14,7 @@
 
 # JENKINS IS FILE KO UPDATE KAREGA:
 
-# sed -i 's|image: itsparikshit/juice-shop:15
+# sed -i 's|image: itsparikshit/juice-shop:16
 
 apiVersion: argoproj.io/v1alpha1
 
@@ -78,7 +78,7 @@ spec:
 
         # ⚠️ JENKINS IS LINE KO UPDATE KAREGA
 
-        image: itsparikshit/juice-shop:15
+        image: itsparikshit/juice-shop:16
 
         imagePullPolicy: Always
 
