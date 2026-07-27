@@ -15,6 +15,44 @@ spec:
 
     helm:
       releaseName: monitoring
+      values: |
+        grafana:
+          adminPassword: admin123
+          persistence:
+            enabled: false
+
+        prometheus:
+          prometheusSpec:
+            retention: 7d
+            retentionSize: "8GB"
+            storageSpec: null
+
+            resources:
+              requests:
+                cpu: 200m
+                memory: 700Mi
+              limits:
+                cpu: 500m
+                memory: 1Gi
+
+        alertmanager:
+          alertmanagerSpec:
+            storage: null
+
+        kubeStateMetrics:
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+
+        prometheusOperator:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+
+        nodeExporter:
+          enabled: true
 
   destination:
     server: https://kubernetes.default.svc
