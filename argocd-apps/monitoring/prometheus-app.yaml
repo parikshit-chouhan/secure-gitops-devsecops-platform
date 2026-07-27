@@ -11,11 +11,10 @@ spec:
   source:
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    targetRevision: 72.6.2
+    targetRevision: 69.8.2
 
     helm:
-      skipCrds: false
-
+      skipCrds: true
       releaseName: monitoring
       values: |
         grafana:
