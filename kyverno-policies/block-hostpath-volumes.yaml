@@ -1,0 +1,27 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: block-hostpath
+
+spec:
+  validationFailureAction: Enforce
+  background: true
+
+  rules:
+
+  - name: hostpath
+
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+
+    validate:
+      message: "HostPath volumes are not allowed."
+
+      deny:
+        conditions:
+          any:
+          - key: "{{ request.object.spec.volumes[].hostPath }}"
+            operator: Exists
